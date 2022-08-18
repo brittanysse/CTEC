@@ -15,5 +15,5 @@ app.route('/comments/:id').put(commentController.updateComment) // activate the 
 app.route('/comments/:id').delete(commentController.deleteComment); // activate the deleteComment method if the route is DELETE(method) /comments/:id
 
 
-app.listen(8080, "127.0.0.1"); // start the nodejs to be listening for incoming request @ port 8080
+app.listen(port, () => console.log(`Example app listening on port ${port}!`)) // start the nodejs to be listening for incoming request @ port 8080
 //console.log("web server running @ http://127.0.0.1:8080"); // output to console 
