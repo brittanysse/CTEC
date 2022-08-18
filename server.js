@@ -1,5 +1,5 @@
 var express = require("express"); //using the express web framework
-
+const port = 3000;
 var commentController = require('./controllers/commentController'); // set commentController to the commentController class
 var movieController = require('./controllers/movieController'); // set movieController to the movieController class
 var app = express(); // set variable app to be an instance of express framework. From now on, app is the express
@@ -16,4 +16,4 @@ app.route('/comments/:id').delete(commentController.deleteComment); // activate 
 
 
 app.listen(8080, "127.0.0.1"); // start the nodejs to be listening for incoming request @ port 8080
-console.log("web server running @ http://127.0.0.1:8080"); // output to console 
+//console.log("web server running @ http://127.0.0.1:8080"); // output to console 
