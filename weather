@@ -1,0 +1,216 @@
+<div class="verticalweatherForecast" data-key="T8ZZAFJHP5E2HRAKNAU9GU6HV" data-location="Singapore" data-unitGroup="metric">/>
+function WeatherForecastWidget(selector) {
+
+            //Initialize the widget using the container parameters
+            this.config={
+                "location":selector.attr("data-location"),
+                "unitGroup":selector.attr("data-unitGroup") || "us",
+                "key": selector.attr("data-key") 
+            }
+
+            
+            //the root HTML tag selector
+            this.selector=selector;
+
+            //weather forecasta data
+            this.data=null;
+
+            var me=this;
+            //constructs Weather API request and then loads the weather forecast data from the Weather API
+            this.loadForecastData=function() {
+               ...
+            }
+
+            //displays the weather data inside the container tag
+            this.refresh=function() {
+               ...
+            }
+        }
+        var attach=function(selector) {
+        var instance=new WeatherForecastWidget($(selector) );
+        instance.loadForecastData();
+        return instance;
+    }
+    WeatherForecastDisplay.attach(".horizontalweatherForecast");
+     WeatherForecastDisplay.attach(".verticalweatherForecast");
+     //constructs Weather API request and then loads the weather forecast data from the Weather API
+     this.loadForecastData=function() {
+         //endpoint
+         var uri="https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/weatherdata/forecast?";
+         //parameters
+         uri+="unitGroup="+me.config.unitGroup+"&locationMode=single&aggregateHours=24&contentType=json&iconSet=icons1&location="+me.config.location+"&key="+me.config.key;
+         $.get(uri, function( rawResult ) {
+            me.data=rawResult;
+            me.refresh();
+         });
+     }
+      //'me' refers to the WeatherForecastWidget instance
+        var root=$(me.selector);
+        //no data at all - exit
+        if (!me.data) {
+            $(me.selector).html("No data available for "+me.config.location);
+            return;
+        }
+        //no locations in the data -  exit
+        var locationData=me.data.location;
+     
+        var forecastValues=locationData.values;
+        //add a root style for CSS specificity and top level rules
+        root.toggleClass("forecastwidget", true);
+        //construct the HTML skeleton
+        root.html("<div class='location'></div>"+
+                "<div class='days'></div>"+
+                "<div class='footer'><a href='https://www.visualcrossing.com/weather-api' title='Weather Data by Visual Crossing' target='_blank'>Credit</a>");
+                   //use the container size to decide how to display the forecast
+        //and how many days
+        var rect=root.get(0).getBoundingClientRect()
+        var isVertical=rect.height>rect.width;
+        root.children(".days").toggleClass("vertical", isVertical);
+        <div class='day'>
+           <div class='date'></div>
+           <div class='icon' ></div>
+           <div class='maxt'></div>
+           <div class='mint'></div>
+           <div class='precip'<span class='value'></span></div>
+           <div class='conditions'></div>
+        </div>
+         <div class='day'>
+           <div class='date'></div>
+           <i class='icon fas' ></i>
+           <div class='maxt'></div>
+           <div class='mint'></div>
+           <div class='precip'><span class='value'></span></div>
+           <div class='conditions'></div>
+        </div>
+        forecastValues.forEach(function(d) {
+        //create a new day div with children
+        var dayElement=$("<div class='day'>"+
+                "<div class='date'></div>"+
+                " <div class='icon' ></div>"+
+                "<div class='maxt'></div>"+
+                "<div class='mint'></div>"+
+                "<div class='precip'><span class='value'></span></div>"+
+                "<div class='conditions'></div>"+
+                "</div>");
+        
+        //add the day to the days element
+        root.find(".days").append(dayElement);
+        
+        
+        //temperature and conditions are simply inserted into the appropriate div
+        dayElement.find(".maxt").html(Math.round(d.maxt));
+        dayElement.find(".mint").html(Math.round(d.mint));
+        dayElement.find(".conditions").html(d.conditions);
+        
+        //date is added with a little additional formatting
+        var date= new Date(d.datetime);
+        //by default the values are returned in the local time zone of the location requested 
+        date=new Date(date.getTime()+ date.getTimezoneOffset()*60000);
+        dayElement.find(".date").html(MONTHS[date.getMonth()]+" "+date.getDate());
+
+
+        //the rainfall value includes so hide the whole section if no rainfall
+        var precip=dayElement.find(".precip");
+        precip.toggleClass("hidden",  !d.precip);
+        precip.find(".value").html(d.precip);
+        
+        //a simple logic decides which icon to show based upon the conditions
+        var icon=dayElement.find(".icon");
+        icon.toggleClass(d.icon,true);
+});
+  .forecastwidget {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            font-size: 14px;
+            background-color:#ffffff;
+            margin:10px;
+            border-radius: 7px;
+        }
+        //basic days rules - used for both horizontal and vertical layout
+        .forecastwidget .days {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            flex: 1;
+            overflow: hidden;
+        }
+        //vertical layout overrides the orientation of the days
+        .forecastwidget .days.vertical {
+            flex-direction: column;
+            font-size: 1.2em;
+        }
+         //define a grid layout with two columns
+        .forecastwidget .days .day {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            
+            justify-content: center;
+            align-items: center;
+            padding: 0px 5px;
+            font-size: 0.9em;
+            justify-items: center;
+            grid-gap: 1px;
+        }   
+
+        //most forecast elements take up two columns
+        .forecastwidget .days .day * {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        //maximum and minimum elements are arrange side by side
+        .forecastwidget .days .day .maxt {
+            grid-column: 1 ;
+        }
+        .forecastwidget .days .day .mint {
+            grid-column: 2 ;
+        }
+         /*element styling rules*/
+        .forecastwidget .location {
+            font-size: 1em;
+            font-weight: bold;
+            flex:0;
+        }
+        .forecastwidget .footer {
+            font-size: 0.7em;
+            color:darkgrey;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .forecastwidget .days .day .date {
+            color:darkgrey;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+
+        .forecastwidget .days .day:not(:last-child) {
+            border-right:1px solid darkgray;
+        }
+
+        .forecastwidget .days.vertical .day:not(:last-child) {
+            border-right:none;
+            border-bottom:1px solid darkgray;
+        }
+
+        .forecastwidget .days .day .conditions {
+            display:none;
+            color:darkgrey;
+            font-size: 0.9em;
+        }
+        .forecastwidget .days.vertical .day .conditions {
+            display:block;
+        }
+        .forecastwidget .days .day  .maxt {
+            font-weight: bold;
+        }
+        .forecastwidget .days .day  .mint {
+            font-size: 0.9em;
+            color:darkgrey;
+        }
+       
+        .forecastwidget .days .day  .hidden {
+           visibility: hidden;
+        }
