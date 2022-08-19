@@ -41,6 +41,21 @@
     <!-- Include the message modal here -->
     <div w3-include-html="message-modal.html"></div>
     <br><br>
+     <div id= "map"></div>
+    <script>
+      function initMap() {
+        var options = {
+          zoom: 15,
+          center: { lat: 33.933241, lng: -84.340288 },
+        };
+        var map = new google.maps.Map(document.getElementById('map'), options);
+
+        var marker = new google.maps.Marker({
+          position: { lat: 1.3062932, lng: 103.8318472 },
+          map: map,
+        });
+      }
+    </script>
     <!-- Include the footer here -->
     <div w3-include-html="footer.html"></div>
 </body>
@@ -49,6 +64,7 @@
     //to bring in other HTML on the fly into this page
     w3.includeHTML();
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCve4Co-Bls4YQRJ9uYNAGTgwSWa3RDcA0&callback=initMap"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 <script src="https://kit.fontawesome.com/86ec7c1143.js" ></script>
